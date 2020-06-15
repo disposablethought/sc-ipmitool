@@ -2,7 +2,7 @@
 clear
 echo -e "\e[33mStudioCloud\e[0m IPMItool Automation"
 prompt="Pick an option:"
-options=("Power on/off" "UID on/off" "Power Cycle" "Set VLAN" "Change IP" "Change subnet" "Set Netmask" "Set Gateway" "Change Username" "Change Password" "Clear SEL")
+options=("Power on/off" "UID on/off" "Power Cycle" "Set VLAN" "Change subnet" "Set Netmask" "Set Gateway" "Change Username" "Change Password" "Clear SEL")
 
 echo "Welcome to StudioCloud's IPMItool Automator"
 echo "Please enter the first 3 octets of the network, ex. 10.64.80?"
@@ -30,7 +30,7 @@ select opt in "${options[@]}" "Quit"; do
                          do
                             ipadd=$octets.$counter
                             echo "Powering $power $ipadd"
-                            $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass power $power)
+                            $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass power $power &) &
                          done
                          echo "-----------------------------Complete-----------------------------------"
                    ;;
@@ -41,7 +41,7 @@ select opt in "${options[@]}" "Quit"; do
                          do
                             ipadd=$octets.$counter
                             echo "Setting UID for $ipadd"
-                            $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass chassis identify $timer)
+                            $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass chassis identify $timer &) &
                          done
                          echo "-----------------------------Complete-----------------------------------"
                    ;;
@@ -49,7 +49,7 @@ select opt in "${options[@]}" "Quit"; do
                          do
                             ipadd=$octets.$counter
                             echo "Restarting $ipadd"
-                            $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass chassis power cycle)
+                            $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass chassis power cycle &) &
                          done
                          echo "-----------------------------Complete-----------------------------------"
                    ;;
@@ -63,28 +63,17 @@ select opt in "${options[@]}" "Quit"; do
                          done
                          echo "-----------------------------Complete-----------------------------------"
                         ;;
-    5 ) echo "Enter new IP you want start at: (Ex. enter '1' to change 10.64.14.42 to 10.64.14.1 ...) and go through the list of IPs as defined at the start"
-                        read newip
-            for (( counter=startip; counter<$lastip; counter++ ))
-                         do
-                            ipadd=$octets.$counter
-                            echo "Changing $ipadd to $octets.$counter"
-                            $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 1 ipaddr $octets.$newip &) &
-                            newip++
-                         done;
-                         echo "-----------------------------Complete-----------------------------------"
-                        ;;
-    6 ) echo "Enter new subnet for IPs: (Ex. enter '10.66.115' to change: $octets to 10.64.88.x)"
+    5 ) echo "Enter new subnet for IPs: (Ex. enter '115' to change 10.64.?.x to 10.64.115.x)"
                         read newsub
             for (( counter=startip; counter<$lastip; counter++ ))
                          do
                             ipadd=$octets.$counter
-                            echo "Changing $ipadd to $newsub.$counter"
+                            echo "Changing $ipadd to 10.64.$newsub.$counter"
                             $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 1 ipaddr 10.64.$newsub.$counter &) &
                          done;
                          echo "-----------------------------Complete-----------------------------------"
                         ;;
-   7 ) echo "Please enter desired netmask:"
+   6 ) echo "Please enter desired netmask:"
         read netmask
            for (( counter=startip; counter<$lastip; counter++ ))
                         do
@@ -94,17 +83,17 @@ select opt in "${options[@]}" "Quit"; do
                         done
                         echo "-----------------------------Complete-----------------------------------"
                        ;;
-    8 ) echo "Please enter desired gateway:"
+    7 ) echo "Please enter desired gateway:"
          read gateway
            for (( counter=startip; counter<$lastip; counter++ ))
                          do
                            ipadd=$octets.$counter
                            echo "Setting gateway on $ipadd"
-                           $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 1 gateway $gateway)
+                           $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 1 defgw ipaddr $gateway)
                          done
                          echo "-----------------------------Complete-----------------------------------"
                         ;;
-   9 ) echo "Please enter new username:"
+   8 ) echo "Please enter new username:"
         read chuser
            for (( counter=startip; counter<$lastip; counter++ ))
                           do
@@ -114,7 +103,7 @@ select opt in "${options[@]}" "Quit"; do
                           done
                           echo "-----------------------------Complete-----------------------------------"
                         ;;
-   10 ) echo "Please enter new password:"
+   9 ) echo "Please enter new password:"
         read chpass
            for (( counter=startip; counter<$lastip; counter++ ))
                          do
@@ -124,7 +113,7 @@ select opt in "${options[@]}" "Quit"; do
                          done
                          echo "-----------------------------Complete-----------------------------------"
                        ;;
-   11 ) for (( counter=startip; counter<$lastip; counter++ ))
+   10 ) for (( counter=startip; counter<$lastip; counter++ ))
                          do
                          ipadd=$octets.$counter
                          echo "Clearing SEL for $ipadd"
@@ -138,4 +127,3 @@ select opt in "${options[@]}" "Quit"; do
 esac
 
 done
-            
