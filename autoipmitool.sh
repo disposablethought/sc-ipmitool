@@ -93,13 +93,17 @@ select opt in "${options[@]}" "Quit"; do
                          done
                          echo "-----------------------------Complete-----------------------------------"
                         ;;
-   8 ) echo "Please enter new username:"
+   8 ) echo "Current users:"
+   $(/usr/bin/ipmitool -I lanplus -H $octets.$startip -U $user -P $pass user list)
+		echo "Select a user slot:"
+		read slot
+		echo "Please enter new username:"
         read chuser
            for (( counter=startip; counter<$lastip; counter++ ))
                           do
                           ipadd=$octets.$counter
                           echo "Changing username for $ipadd"
-                          $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass user set name 3 $chuser)
+                          $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass user set name $slot $chuser)
                           done
                           echo "-----------------------------Complete-----------------------------------"
                         ;;
