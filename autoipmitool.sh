@@ -31,6 +31,7 @@ select opt in "${options[@]}" "Quit"; do
                             ipadd=$octets.$counter
                             echo "Powering $power $ipadd"
                             $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass power $power &) &
+			    sleep .5
                          done
                          echo "-----------------------------Complete-----------------------------------"
                    ;;
@@ -42,6 +43,7 @@ select opt in "${options[@]}" "Quit"; do
                             ipadd=$octets.$counter
                             echo "Setting UID for $ipadd"
                             $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass chassis identify $timer &) &
+			    sleep .5
                          done
                          echo "-----------------------------Complete-----------------------------------"
                    ;;
@@ -50,6 +52,7 @@ select opt in "${options[@]}" "Quit"; do
                             ipadd=$octets.$counter
                             echo "Restarting $ipadd"
                             $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass chassis power cycle &) &
+			    sleep .5
                          done
                          echo "-----------------------------Complete-----------------------------------"
                    ;;
@@ -59,7 +62,8 @@ select opt in "${options[@]}" "Quit"; do
                          do
                             ipadd=$octets.$counter
                             echo "Setting $ipadd to VLAN $vlan"
-                            $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 0x01 vlan id $vlan)
+                            $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 0x01 vlan id $vlan &) &
+			    sleep .5
                          done
                          echo "-----------------------------Complete-----------------------------------"
                         ;;
@@ -70,6 +74,7 @@ select opt in "${options[@]}" "Quit"; do
                             ipadd=$octets.$counter
                             echo "Changing $ipadd to 10.64.$newsub.$counter"
                             $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 1 ipaddr 10.64.$newsub.$counter &) &
+			    sleep .5
                          done;
                          echo "-----------------------------Complete-----------------------------------"
                         ;;
@@ -79,7 +84,8 @@ select opt in "${options[@]}" "Quit"; do
                         do
                            ipadd=$octets.$counter
                            echo "Setting netmask on $ipadd"
-                           $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 1 netmask $netmask)
+                           $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 1 netmask $netmask &) &
+			   sleep .5
                         done
                         echo "-----------------------------Complete-----------------------------------"
                        ;;
@@ -89,13 +95,14 @@ select opt in "${options[@]}" "Quit"; do
                          do
                            ipadd=$octets.$counter
                            echo "Setting gateway on $ipadd"
-                           $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 1 defgw ipaddr $gateway)
+                           $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass lan set 1 defgw ipaddr $gateway &) &
+			   sleep .5
                          done
                          echo "-----------------------------Complete-----------------------------------"
                         ;;
    8 ) echo "Current users:"
    $(/usr/bin/ipmitool -I lanplus -H $octets.$startip -U $user -P $pass user list)
-		echo "Select a user slot:"
+		echo "Select an ID slot:"
 		read slot
 		echo "Please enter new username:"
         read chuser
@@ -103,7 +110,8 @@ select opt in "${options[@]}" "Quit"; do
                           do
                           ipadd=$octets.$counter
                           echo "Changing username for $ipadd"
-                          $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass user set name $slot $chuser)
+                          $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass user set name $slot $chuser &) &
+			  sleep .5
                           done
                           echo "-----------------------------Complete-----------------------------------"
                         ;;
@@ -113,7 +121,8 @@ select opt in "${options[@]}" "Quit"; do
                          do
                          ipadd=$octets.$counter
                          echo "Changing password for $ipadd"
-                         $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass user set password 3 $chpass)
+                         $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass user set password 3 $chpass &) &
+			 sleep .5
                          done
                          echo "-----------------------------Complete-----------------------------------"
                        ;;
@@ -121,7 +130,8 @@ select opt in "${options[@]}" "Quit"; do
                          do
                          ipadd=$octets.$counter
                          echo "Clearing SEL for $ipadd"
-                         $(/usr/bin/ipmitool -H $ipadd -U $user -P $pass sel clear)
+                         $(/usr/bin/ipmitool -H $ipadd -U $user -P $pass sel clear &) &
+			 sleep .5
                          done
                          echo "-----------------------------Complete-----------------------------------"
                       ;;
