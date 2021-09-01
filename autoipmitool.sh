@@ -130,7 +130,7 @@ select opt in "${options[@]}" "Quit"; do
                          do
                          ipadd=$octets.$counter
                          echo "Clearing SEL for $ipadd"
-                         $(/usr/bin/ipmitool -H $ipadd -U $user -P $pass sel clear &) &
+                         $(/usr/bin/ipmitool -I lanplus -H $ipadd -U $user -P $pass sel clear &) &
 			 sleep .5
                          done
                          echo "-----------------------------Complete-----------------------------------"
