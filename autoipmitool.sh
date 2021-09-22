@@ -136,7 +136,7 @@ select opt in "${options[@]}" "Quit"; do
                          done
                          echo "-----------------------------Complete-----------------------------------"
                       ;;
-   12 ) for (( counter=startip; counter<$lastip; counter++ ))
+   11 ) for (( counter=startip; counter<$lastip; counter++ ))
                          do
                          ipadd=$octets.$counter
                          echo "Setting PXE boot $ipadd"
