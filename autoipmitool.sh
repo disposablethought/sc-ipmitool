@@ -3,7 +3,7 @@ export PATH=$PATH:/usr/bin/
 clear
 echo -e "\e[33mStudioCloud\e[0m IPMItool Automation"
 prompt="Pick an option:"
-options=("Power on/off" "UID on/off" "Power Cycle" "Set VLAN" "Change subnet" "Set Netmask" "Set Gateway" "Change Username" "Change Password" "Clear SEL")
+options=("Power on/off" "UID on/off" "Power Cycle" "Set VLAN" "Change subnet" "Set Netmask" "Set Gateway" "Change Username" "Change Password" "Clear SEL" "Persistent PXE Boot")
 
 echo "Welcome to StudioCloud's IPMItool Automator"
 echo "Please enter the first 3 octets of the network, ex. 10.64.80?"
@@ -132,6 +132,15 @@ select opt in "${options[@]}" "Quit"; do
                          ipadd=$octets.$counter
                          echo "Clearing SEL for $ipadd"
                          ipmitool -I lanplus -H $ipadd -U $user -P $pass sel clear &
+                         sleep .1
+                         done
+                         echo "-----------------------------Complete-----------------------------------"
+                      ;;
+   12 ) for (( counter=startip; counter<$lastip; counter++ ))
+                         do
+                         ipadd=$octets.$counter
+                         echo "Setting PXE boot $ipadd"
+                         ipmitool -I lanplus -H $ipadd -U $user -P $pass chassis bootdev disk options=persistent &
                          sleep .1
                          done
                          echo "-----------------------------Complete-----------------------------------"
