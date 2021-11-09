@@ -140,7 +140,7 @@ select opt in "${options[@]}" "Quit"; do
                          do
                          ipadd=$octets.$counter
                          echo "Setting PXE boot $ipadd"
-                         ipmitool -I lanplus -H $ipadd -U $user -P $pass chassis bootdev disk options=persistent &
+                         ipmitool -I lanplus -H $ipadd -U $user -P $pass chassis bootdev pxe options=persistent &
                          sleep .1
                          done
                          echo "-----------------------------Complete-----------------------------------"
